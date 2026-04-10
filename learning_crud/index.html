@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>hi</h1>
+    <h2>Current Records : </h2>
+
+    <div></div>
+
+    <input type="text" placeholder="Enter a new record" id="new-input">
+    <button id="submit" onclick="newData()">Submit</button>
+
+    <script>
+        async function getData() {
+            const res = await axios.get("http://localhost:3000/api/data")
+            // console.log(res)
+            // console.log(res.data.data)
+
+            const data = res.data.data
+            const div = document.querySelector("div")
+            for (let key in data) {
+                // console.log(key)
+                const p = document.createElement("p")
+                p.innerHTML=key+ " " + data[key]
+                div.appendChild(p)
+            }
+            
+        }
+
+        getData()
+
+        document.getElementById("new-input").addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                newData()
+            }
+        })
+
+        //no backend -> but data goes on refreshing
+        // function newData() {
+        //     const inputEl = document.getElementById("new-input");
+        //     const value = inputEl.value;
+        //     const div = document.querySelector("div");
+
+        //     if (!value) return;
+
+        //     const p = document.createElement("p");
+        //     let count = div.querySelectorAll("p").length;
+        //     p.innerHTML = (count+1) + " " + value;
+        //     div.appendChild(p);
+
+        //     inputEl.value = "";
+        // }
+
+        
+
+        //add data, post request
+        async function newData() {
+            const inputEl = document.getElementById("new-input");
+            const value = inputEl.value;
+            const div = document.querySelector("div");
+            if (!value) return;
+
+            await axios.post("http://localhost:3000/api/data", {value:value})
+
+            const p = document.createElement("p");
+            let count = div.querySelectorAll("p").length;
+            p.innerHTML = (count + 1) + " " + value;
+            div.appendChild(p);
+
+            inputEl.value = "";
+        }
+    </script>
+</body>
+
+</html>
